@@ -39,7 +39,7 @@
     </style>
   </head>
   <body>
-    <h1>Restaurant Form</h1>
+    <h1>SignUp</h1>
     <form id="signupForm">
       <input type="text" name="email" placeholder="Email" required>
       <input type="text" name="password" placeholder="Password" required>
@@ -65,7 +65,6 @@
           .then((response) => {
             if (response.ok) {
               alert('SignUp Successful!')
-            //   form.reset()
               location.href="/users/me"
             } else {
               alert('Invalid credentials')
