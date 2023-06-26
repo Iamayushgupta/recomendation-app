@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Restaurant Form</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+      }
+
+      h1 {
+        text-align: center;
+      }
+
+      form {
+        max-width: 400px;
+        margin: 0 auto;
+      }
+
+      input[type="text"], input[type="submit"] {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 10px;
+      }
+
+      input[type="submit"] {
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        cursor: pointer;
+      }
+
+      input[type="submit"]:hover {
+        background-color: #45a049;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Restaurant Form</h1>
+    <form id="restaurantForm">
+      <input type="text" name="name" placeholder="Name" required>
+      <input type="text" name="city" placeholder="City" required>
+      <input type="text" name="restaurant" placeholder="Restaurant" required>
+      <input type="text" name="favoriteDish" placeholder="Favorite Dish" required>
+      <input type="submit" value="Submit">
+    </form>
+
+    <script>
+      const form = document.getElementById('restaurantForm');
+
+      form.addEventListener('submit', (e) => {
+
+        e.preventDefault()
+        const formData = new FormData(form)
+        const requestData = Object.fromEntries(formData.entries())
+        
+        fetch('/users/me', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(requestData),
+        })
+          .then((response) => {
+            if (response.ok) {
+              alert('Data Submitted successfully!')
+              form.reset()
+            } else {
+              alert('An error occurred while submitting the form.')
+            }
+          })
+          .catch((error) => {
+            alert('An error occurred Overall.')
+          })
+      })
+      
+    </script>
+  </body>
+</html>
