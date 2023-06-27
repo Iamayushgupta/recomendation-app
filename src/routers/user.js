@@ -5,6 +5,11 @@ const path = require("path")
 const conn = require("../db/mysql.js")
 const bcrypt = require('bcrypt')
 
+router.get("", async (req, res) => {
+    const newPath = path.join(__dirname, "../../views/home.html")
+    res.sendFile(newPath)
+})
+
 router.post('/users/me', async (req, res) => {
     const { name, city, restaurant, favoriteDish } = req.body
     const user = new User({ name, city, restaurant, favoriteDish })
@@ -27,7 +32,7 @@ const salt = bcrypt.genSaltSync(8)
 router.post("/users/login", async (req, res) => {
     const { email, password } = req.body
     const query = 'SELECT password FROM users WHERE email = ?'
-    conn.query(query, [email, password], async(err, results) => {
+    conn.query(query, [email, password], async (err, results) => {
         if (err) {
             res.sendStatus(500)
         }
@@ -72,8 +77,22 @@ router.get("/users/signup", async (req, res) => {
     res.sendFile(newPath)
 })
 
-router.get("/users/home", async (req,res)=>{
-    const newPath = path.join(__dirname, "../../views/home.html")
+router.get("/users/:city", async (req, res) => {
+    const newPath = path.join(__dirname, "../../views/city.html")
     res.sendFile(newPath)
+    const cityName = req.params.name;
+
+    try {
+        const city = await User.findOne({ name: cityName });
+
+        if (!city) {
+            res.status(404).send('City not found');
+        } else {
+            res.json(city);
+        }
+    } catch (err) {
+        console.error('Error finding city:', err);
+        res.status(500).send('Error finding city');
+    }
 })
 module.exports = router
