@@ -73,8 +73,7 @@ router.get("/users/signup", async (req, res) => {
     res.sendFile(newPath)
 })
 
-
-router.get("/users/home", async (req, res) => {
+router.get("/users/home", async (req,res)=>{
     const newPath = path.join(__dirname, "../../views/home.html")
     res.sendFile(newPath)
 })
