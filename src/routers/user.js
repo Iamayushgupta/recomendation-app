@@ -4,7 +4,6 @@ const User = require("../models/user.js")
 const path = require("path")
 const conn = require("../db/mysql.js")
 const bcrypt = require('bcrypt')
-const { AsyncLocalStorage } = require("async_hooks")
 
 router.post('/users/me', async (req, res) => {
     const { name, city, restaurant, favoriteDish } = req.body
