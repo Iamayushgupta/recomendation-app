@@ -5,13 +5,14 @@
   "main": "app.js",
   "scripts": {
     "start": "node src/app.js",
-    "dev": "npx nodemon src/app.js -e js,hbs,json,html"
+    "dev": "npx nodemon src/app.js -e js,ejs,html"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.1.0",
+    "ejs": "^3.1.9",
     "express": "^4.18.2",
     "hbs": "^4.2.0",
     "mongoose": "^7.3.0",
