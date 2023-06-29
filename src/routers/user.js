@@ -79,7 +79,7 @@ router.get("/signup", async (req, res) => {
 router.get("/users", async (req, res) => {
     try {
         const city = req.query.city
-        const restaurants = await User.find({city})
+        const restaurants = await User.find({ city })
         res.render('searchByCity', { restaurants })
     } catch (err) {
         console.log(err)
@@ -96,6 +96,23 @@ router.get("/users", async (req, res) => {
     } catch (err) {
         console.log(err)
     }
+})
+
+router.post("/users/edit", async (req, res) => {
+    const { id, name, city, restaurant, favoriteDish } = req.body;
+
+    try {
+        await User.findByIdAndUpdate(id,{name, city, restaurant, favoriteDish },{ new: true, upsert: true })
+        res.sendStatus(200)
+    }
+    catch (e){
+        res.sendStatus(500)
+    }
+    
+})
+
+router.get("/users/edit",async(req,res)=>{
+    res.render("update")
 })
 
 module.exports = router
