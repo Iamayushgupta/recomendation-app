@@ -79,7 +79,18 @@ router.get("/signup", async (req, res) => {
 router.get("/users", async (req, res) => {
     try {
         const city = req.query.city
-        const restaurants = await User.find({ city })
+        const name = req.query.name
+
+        if (!city){
+            var restaurants = await User.find({ name })
+        }
+        else if (!name){
+            var restaurants = await User.find({ city })
+        }
+        else{
+            var restaurants = await User.find({name,city})
+        }
+        
         res.render('searchByCity', { restaurants })
     } catch (err) {
         console.log(err)
