@@ -1,10 +1,27 @@
 const mongoose = require("mongoose")
 
 const userSchema= new mongoose.Schema({
-    name: String,
-    city: String,
-    restaurant: String,
-    favoriteDish: String,
+    name : {
+        type : String,
+        trim : true,
+        required : true
+    },
+    city : {
+        type : String,
+        trim : true,
+        required : true
+    },
+    restaurant : {
+        type : String,
+        trim : true,
+        required : true
+    },
+    favoriteDish : {
+        type : String,
+        trim : true
+    },
+},{
+    timestamps : true
 });
 
 // userSchema.methods.generateAuthToken = async function(){
