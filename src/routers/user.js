@@ -11,7 +11,7 @@ router.get("", async (req, res) => {
 })
 
 //Submit Data Route
-router.post('/users/me', async (req, res) => {
+router.post('/users/submit', async (req, res) => {
     const { name, city, restaurant, favoriteDish } = req.body
     const user = new User({ name, city, restaurant, favoriteDish })
     try {
@@ -23,7 +23,7 @@ router.post('/users/me', async (req, res) => {
     }
 })
 
-router.get('/users/me', (req, res) => {
+router.get('/users/submit', (req, res) => {
     res.render("form")
 })
 
