@@ -90,8 +90,8 @@ router.get("/users", async (req, res) => {
         else{
             var restaurants = await User.find({name,city})
         }
-        
-        res.render('searchByCity', { restaurants })
+
+        res.render('searchBy', { restaurants })
     } catch (err) {
         console.log(err)
     }
