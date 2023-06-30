@@ -39,15 +39,15 @@
     </style>
   </head>
   <body>
-    <h1>SignUp</h1>
-    <form id="signupForm">
+    <h1>Login</h1>
+    <form id="loginForm">
       <input type="text" name="email" placeholder="Email" required>
       <input type="text" name="password" placeholder="Password" required>
       <input type="submit" value="Submit">
     </form>
 
     <script>
-      const form = document.getElementById('signupForm');
+      const form = document.getElementById('loginForm');
 
       form.addEventListener('submit', (e) => {
 
@@ -55,7 +55,7 @@
         const formData = new FormData(form)
         const requestData = Object.fromEntries(formData.entries())
         
-        fetch('/users/signup', {
+        fetch('/login', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -64,10 +64,11 @@
         })
           .then((response) => {
             if (response.ok) {
-              alert('SignUp Successful!')
-              location.href="/users/me"
+              alert('Login Successful!')
+              form.reset()
+              location.href="/users/submit"
             } else {
-              alert('Email address already taken, try logging in')
+              alert('Invalid credentials')
             }
           })
           .catch((error) => {

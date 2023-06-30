@@ -5,12 +5,13 @@ const path = require("path")
 const conn = require("../db/mysql.js")
 const bcrypt = require('bcrypt')
 
+//Home Page
 router.get("", async (req, res) => {
-    const newPath = path.join(__dirname, "../../views/home.html")
-    res.sendFile(newPath)
+    res.render("home")
 })
 
-router.post('/users/me', async (req, res) => {
+//Submit Data Route
+router.post('/users/submit', async (req, res) => {
     const { name, city, restaurant, favoriteDish } = req.body
     const user = new User({ name, city, restaurant, favoriteDish })
     try {
@@ -22,14 +23,12 @@ router.post('/users/me', async (req, res) => {
     }
 })
 
-router.get('/users/me', (req, res) => {
-    const newPath = path.join(__dirname, "../../views/index.html")
-    res.sendFile(newPath)
+router.get('/users/submit', (req, res) => {
+    res.render("form")
 })
 
-const salt = bcrypt.genSaltSync(8)
-
-router.post("/users/login", async (req, res) => {
+//Login Route
+router.post("/login", async (req, res) => {
     const { email, password } = req.body
     const query = 'SELECT password FROM users WHERE email = ?'
     conn.query(query, [email, password], async (err, results) => {
@@ -51,16 +50,16 @@ router.post("/users/login", async (req, res) => {
     })
 })
 
-
-router.get("/users/login", async (req, res) => {
-    const newPath = path.join(__dirname, "../../views/login.html")
-    res.sendFile(newPath)
+router.get("/login", async (req, res) => {
+    res.render("login")
 })
 
-
-router.post("/users/signup", async (req, res) => {
+//SignUp Route
+router.post("/signup", async (req, res) => {
     const { email, password } = req.body
+    const salt = bcrypt.genSaltSync(8)
     const hashedPassword = bcrypt.hashSync(password, salt)
+
     const query = 'insert into users(email, password) values(?,?)'
     conn.query(query, [email, hashedPassword], (err, results) => {
         if (err) {
@@ -72,27 +71,31 @@ router.post("/users/signup", async (req, res) => {
     })
 })
 
-router.get("/users/signup", async (req, res) => {
-    const newPath = path.join(__dirname, "../../views/signup.html")
-    res.sendFile(newPath)
+router.get("/signup", async (req, res) => {
+    res.render("signup")
 })
 
-router.get("/users/:city", async (req, res) => {
-    const newPath = path.join(__dirname, "../../views/city.html")
-    res.sendFile(newPath)
-    const cityName = req.params.name;
-
+// Search By City
+router.get("/users", async (req, res) => {
     try {
-        const city = await User.findOne({ name: cityName });
-
-        if (!city) {
-            res.status(404).send('City not found');
-        } else {
-            res.json(city);
-        }
+        const city = req.query.city
+        const restaurants = await User.find({city})
+        res.render('searchByCity', { restaurants })
     } catch (err) {
-        console.error('Error finding city:', err);
-        res.status(500).send('Error finding city');
+        console.log(err)
     }
 })
+
+//Search By Name
+router.get("/users", async (req, res) => {
+    try {
+        const username = req.query.name
+        const restaurants = await User.find({ name: username })
+        console.log(restaurants)
+        res.render('searchByCity', { restaurants })
+    } catch (err) {
+        console.log(err)
+    }
+})
+
 module.exports = router

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Restaurant Finder</title>
+  <style>
+    body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    padding: 20px;
+    margin: 0;
+  }
+  
+  h1 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  form {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  input[type="text"] {
+    padding: 10px;
+    width: 300px;
+    border-radius: 5px;
+    border: none;
+  }
+  
+  button {
+    padding: 10px 20px;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  th,
+  td {
+    padding: 10px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  th {
+    background-color: #4caf50;
+    color: white;
+  }
+  
+  </style>
+</head>
+
+<body>
+  <h1>Restaurant Finder</h1>
+  <form action="/users" method="GET">
+    <input type="text" name="city" placeholder="Enter city name">
+    <button type="submit">Search</button>
+  </form>
+
+  <table>
+    <tr>
+      <th>Name</th>
+      <th>City</th>
+      <th>Restaurant</th>
+      <th>Favorite Dish</th>
+    </tr>
+    <% restaurants.forEach(function(restaurant) { %>
+    <tr>
+      <td><%= restaurant.name %></td>
+      <td><%= restaurant.city %></td>
+      <td><%= restaurant.restaurant %></td>
+      <td><%= restaurant.favoriteDish %></td>
+    </tr>
+    <% }); %>
+  </table>
+</body>
+
+</html>

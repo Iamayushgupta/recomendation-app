@@ -7,7 +7,6 @@
       body {
         font-family: Arial, sans-serif;
         padding: 20px;
-        text-align: center;
       }
 
       h1 {
@@ -22,7 +21,7 @@
       input[type="text"], input[type="submit"] {
         display: block;
         width: 100%;
-        padding: 15px;
+        padding: 10px;
         margin-bottom: 10px;
       }
 
@@ -39,15 +38,17 @@
     </style>
   </head>
   <body>
-    <h1>Login</h1>
-    <form id="loginForm">
-      <input type="text" name="email" placeholder="Email" required>
-      <input type="text" name="password" placeholder="Password" required>
+    <h1>Restaurant Form</h1>
+    <form id="restaurantForm">
+      <input type="text" name="name" placeholder="Name" required>
+      <input type="text" name="city" placeholder="City" required>
+      <input type="text" name="restaurant" placeholder="Restaurant" required>
+      <input type="text" name="favoriteDish" placeholder="Favorite Dish" required>
       <input type="submit" value="Submit">
     </form>
 
     <script>
-      const form = document.getElementById('loginForm');
+      const form = document.getElementById('restaurantForm');
 
       form.addEventListener('submit', (e) => {
 
@@ -55,7 +56,7 @@
         const formData = new FormData(form)
         const requestData = Object.fromEntries(formData.entries())
         
-        fetch('/users/login', {
+        fetch('/users/submit', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -64,15 +65,14 @@
         })
           .then((response) => {
             if (response.ok) {
-              alert('Login Successful!')
+              alert('Data Submitted successfully!')
               form.reset()
-              location.href="/users/me"
             } else {
-              alert('Invalid credentials')
+              alert('An error occurred while submitting the form.')
             }
           })
           .catch((error) => {
-            alert('Internal Error')
+            alert('An error occurred Overall.')
           })
       })
       
