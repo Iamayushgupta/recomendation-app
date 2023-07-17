@@ -20,6 +20,24 @@ const userSchema= new mongoose.Schema({
         type : String,
         trim : true
     },
+    email :{
+        unique:true,
+        type : String , 
+        required : true , 
+        lowercase: true , 
+        trim : true ,
+        validate(value){
+            if(!validator.isEmail(value)){
+                throw new Error("Not a valid email")
+            }
+        }
+    },
+    password : {
+        type :String ,
+        minlength : 6 , 
+        required :true,
+        trim : true , 
+    }
 },{
     timestamps : true
 });
