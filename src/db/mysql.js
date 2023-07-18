@@ -8,10 +8,10 @@ const mysql = require('mysql2');
 // })
 
 const conn = mysql.createConnection({
-  host: 'database-1.ch9muvve1gk9.ap-south-1.rds.amazonaws.com',
-  user: 'admin',
+  host: process.env.SQLDB_URL,
+  user: process.env.SQLDB_USER,
   port : 3306,
-  password : "ayushsql",
+  password : process.env.SQLDB_PASSWORD,
   database : "reco_db"
 })
 
