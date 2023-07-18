@@ -76,7 +76,7 @@ router.get("/signup", async (req, res) => {
 })
 
 // Search By City
-router.get("/users", async (req, res) => {
+router.get("/users/search", async (req, res) => {
     try {
         const city = req.query.city
         const name = req.query.name
@@ -92,18 +92,6 @@ router.get("/users", async (req, res) => {
         }
 
         res.render('searchBy', { restaurants })
-    } catch (err) {
-        console.log(err)
-    }
-})
-
-//Search By Name
-router.get("/users", async (req, res) => {
-    try {
-        const username = req.query.name
-        const restaurants = await User.find({ name: username })
-        console.log(restaurants)
-        res.render('searchByCity', { restaurants })
     } catch (err) {
         console.log(err)
     }
