@@ -56,7 +56,7 @@
         const formData = new FormData(form)
         const requestData = Object.fromEntries(formData.entries())
         
-        fetch('/verifyOTP', {
+        fetch('/users/verify', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -66,7 +66,7 @@
           .then((response) => {
             if (response.ok) {
               alert('OTP Verified!')
-              location.href="/users/submit"
+              location.href="/users/register"
             } else {
               alert('Incorrect OTP')
             }

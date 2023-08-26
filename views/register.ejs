@@ -82,7 +82,7 @@
       const formData = new FormData(form)
       const requestData = Object.fromEntries(formData.entries())
 
-      fetch('/users/submit', {
+      fetch('/users/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

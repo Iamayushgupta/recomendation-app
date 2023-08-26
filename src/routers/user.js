@@ -3,37 +3,15 @@ const router = new express.Router()
 const User = require("../models/user.js")
 const conn = require("../db/mysql.js")
 const bcrypt = require('bcrypt')
-const speakeasy = require('speakeasy')
 const nodemailer = require("nodemailer")
-// const accountSid = process.env.TWILIO_ACCOUNT_SID
-// const authToken = process.env.TWILIO_ACCOUNT_AUTH_TOKEN
-// const verifySid = process.env.TWILIO_ACCOUNT_VERIFY_SID
-// const client = require("twilio")(accountSid, authToken)
 
 //Home Page
 router.get("", async (req, res) => {
     res.render("home")
 })
 
-//Submit Data Route
-router.post('/users/submit', async (req, res) => {
-    const { name, city, restaurant, favoriteDish } = req.body
-    const user = new User({ name, city, restaurant, favoriteDish })
-    try {
-        await user.save()
-        res.sendStatus(200)
-    }
-    catch (e) {
-        res.sendStatus(500)
-    }
-})
-
-router.get('/users/submit', (req, res) => {
-    res.render("form")
-})
-
 //Login Route
-router.post("/login", async (req, res) => {
+router.post("/users/login", async (req, res) => {
     const { email, password } = req.body
     const query = 'SELECT password FROM users WHERE email = ?'
     conn.query(query, [email, password], async (err, results) => {
@@ -55,11 +33,10 @@ router.post("/login", async (req, res) => {
     })
 })
 
-router.get("/login", async (req, res) => {
+router.get("/users/login", async (req, res) => {
     res.render("login")
 })
 
-//SignUp Route
 const otpDB = new Map() 
 const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -68,7 +45,7 @@ const transporter = nodemailer.createTransport({
       pass: process.env.PASSWORD,
     }
 })
-router.post("/signup", async (req, res) => {
+router.post("/users/signup", async (req, res) => {
     const { email, password } = req.body
     const salt = bcrypt.genSaltSync(8)
     const hashedPassword = bcrypt.hashSync(password, salt)
@@ -100,12 +77,12 @@ router.post("/signup", async (req, res) => {
     })
 })
 
-router.get("/signup", async (req, res) => {
+router.get("/users/signup", async (req, res) => {
     res.render("signup")
 })
 
 //Verify OTP route
-router.post("/verifyOTP", async (req, res) => {
+router.post("/users/verify", async (req, res) => {
     const { email,otp } = req.body
     if (otpDB.has(email) && otpDB.get(email) == otp) {
         res.sendStatus(200)
@@ -114,8 +91,25 @@ router.post("/verifyOTP", async (req, res) => {
     }
 })
 
-router.get("/verifyOTP", async (req, res) => {
-    res.render("verifyOTP")
+router.get("/users/verify", async (req, res) => {
+    res.render("verify")
+})
+
+//Submit Data Route
+router.post('/users/register', async (req, res) => {
+    const { name, city, restaurant, favoriteDish } = req.body
+    const user = new User({ name, city, restaurant, favoriteDish })
+    try {
+        await user.save()
+        res.sendStatus(200)
+    }
+    catch (e) {
+        res.sendStatus(500)
+    }
+})
+
+router.get('/users/register', (req, res) => {
+    res.render("register")
 })
 
 // Search By City

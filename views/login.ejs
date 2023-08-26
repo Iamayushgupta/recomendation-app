@@ -55,7 +55,7 @@
         const formData = new FormData(form)
         const requestData = Object.fromEntries(formData.entries())
         
-        fetch('/login', {
+        fetch('/users/login', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -66,7 +66,7 @@
             if (response.ok) {
               alert('Login Successful!')
               form.reset()
-              location.href="/users/submit"
+              location.href="/users/register"
             } else {
               alert('Invalid credentials')
             }
