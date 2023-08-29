@@ -25,7 +25,6 @@ exports.loginUser = async (req, res) => {
     })
 }
 
-const otpDB = new Map()
 exports.signUpUser = async (req, res) => {
     const { email, password } = req.body
     const salt = bcrypt.genSaltSync(8)
@@ -34,11 +33,12 @@ exports.signUpUser = async (req, res) => {
     const query = 'insert into users(email, password) values(?,?)'
     conn.query(query, [email, hashedPassword], (err, results) => {
         if (err) {
+            console.log(req.session)
             res.sendStatus(500)
         }
         else {
             const otp = generateOTP()
-            otpDB.set(email, otp)
+            req.session.OTP = otp
             sendEmail(email, otp)
             res.sendStatus(200)
         }
@@ -46,8 +46,9 @@ exports.signUpUser = async (req, res) => {
 }
 
 exports.verifyUserOTP = async (req, res) => {
-    const { email,otp } = req.body
-    if (otpDB.has(email) && otpDB.get(email) == otp) {
+    console.log(req.session)
+    const {otp} = req.body
+    if (otp==req.session.OTP) {
         res.sendStatus(200)
     } else {
         res.sendStatus(500)
