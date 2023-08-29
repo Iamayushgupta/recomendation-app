@@ -1,17 +1,9 @@
-const express = require("express")
-const router = new express.Router()
 const User = require("../models/user.js")
-const conn = require("../db/mysql.js")
 const bcrypt = require('bcrypt')
-const nodemailer = require("nodemailer")
+const { sendEmail, generateOTP } = require("../utils/helpers");
+const conn = require("../db/mysql.js")
 
-//Home Page
-router.get("", async (req, res) => {
-    res.render("home")
-})
-
-//Login Route
-router.post("/users/login", async (req, res) => {
+exports.loginUser = async (req, res) => {
     const { email, password } = req.body
     const query = 'SELECT password FROM users WHERE email = ?'
     conn.query(query, [email, password], async (err, results) => {
@@ -21,8 +13,8 @@ router.post("/users/login", async (req, res) => {
         else if (results.length == 0) {
             res.sendStatus(500)
         } else {
-            const hashedPasswordFromDatabase = results[0].password 
-            const passwordMatch = await bcrypt.compare(password, hashedPasswordFromDatabase);
+            const hashedPasswordFromDatabase = results[0].password
+            const passwordMatch = await bcrypt.compare(password, hashedPasswordFromDatabase)
 
             if (passwordMatch) {
                 res.sendStatus(200)
@@ -31,21 +23,10 @@ router.post("/users/login", async (req, res) => {
             }
         }
     })
-})
+}
 
-router.get("/users/login", async (req, res) => {
-    res.render("login")
-})
-
-const otpDB = new Map() 
-const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      user: process.env.EMAIL,
-      pass: process.env.PASSWORD,
-    }
-})
-router.post("/users/signup", async (req, res) => {
+const otpDB = new Map()
+exports.signUpUser = async (req, res) => {
     const { email, password } = req.body
     const salt = bcrypt.genSaltSync(8)
     const hashedPassword = bcrypt.hashSync(password, salt)
@@ -56,47 +37,24 @@ router.post("/users/signup", async (req, res) => {
             res.sendStatus(500)
         }
         else {
-            const otp = Math.floor(100000 + Math.random() * 900000)
+            const otp = generateOTP()
             otpDB.set(email, otp)
-            const mailOptions = {
-                from: 'ayushgupta71011@gmail.com',
-                to: email,
-                subject: 'Your OTP for Signup',
-                text: `Your OTP is: ${otp}`
-            }
-
-            transporter.sendMail(mailOptions, (error, info) => {
-                if (error) {
-                    console.log(error)
-                } else {
-                    console.log('Email sent: ' + info.response)
-                }
-            })
+            sendEmail(email, otp)
             res.sendStatus(200)
         }
     })
-})
+}
 
-router.get("/users/signup", async (req, res) => {
-    res.render("signup")
-})
-
-//Verify OTP route
-router.post("/users/verify", async (req, res) => {
+exports.verifyUserOTP = async (req, res) => {
     const { email,otp } = req.body
     if (otpDB.has(email) && otpDB.get(email) == otp) {
         res.sendStatus(200)
     } else {
         res.sendStatus(500)
     }
-})
+}
 
-router.get("/users/verify", async (req, res) => {
-    res.render("verify")
-})
-
-//Submit Data Route
-router.post('/users/register', async (req, res) => {
+exports.registerUser = async(req,res)=>{
     const { name, city, restaurant, favoriteDish } = req.body
     const user = new User({ name, city, restaurant, favoriteDish })
     try {
@@ -106,14 +64,9 @@ router.post('/users/register', async (req, res) => {
     catch (e) {
         res.sendStatus(500)
     }
-})
+}
 
-router.get('/users/register', (req, res) => {
-    res.render("register")
-})
-
-// Search By City
-router.get("/users/search", async (req, res) => {
+exports.searchUser = async (req,res)=>{
     try {
         const city = req.query.city
         const name = req.query.name
@@ -128,15 +81,14 @@ router.get("/users/search", async (req, res) => {
             var restaurants = await User.find({ name, city })
         }
 
-        res.render('searchBy', { restaurants })
+        res.render('search', { restaurants })
     } catch (err) {
         console.log(err)
     }
-})
+}
 
-router.post("/users/edit", async (req, res) => {
+exports.editUser = async(req,res) =>{
     const { id, name, city, restaurant, favoriteDish } = req.body 
-
     try {
         await User.findByIdAndUpdate(id, { name, city, restaurant, favoriteDish }, { new: true, upsert: true })
         res.sendStatus(200)
@@ -144,11 +96,4 @@ router.post("/users/edit", async (req, res) => {
     catch (e) {
         res.sendStatus(500)
     }
-
-})
-
-router.get("/users/edit", async (req, res) => {
-    res.render("update")
-})
-
-module.exports = router
+}
