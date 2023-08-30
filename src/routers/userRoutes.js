@@ -1,6 +1,6 @@
 const express = require("express")
 const router = new express.Router()
-const { loginUser, signUpUser, verifyUserOTP, registerUser, searchUser, editUser } = require("../controllers/userController");
+const { loginUser, signUpUser, verifyUserOTP, registerUser, searchUser, editUser, resendOTP } = require("../controllers/userController");
 
 router.post("/login",loginUser)
 router.get("/login", async(req,res)=>{
@@ -28,5 +28,7 @@ router.post("/edit", editUser)
 router.get("/edit", async (req, res) => {
     res.render("update")
 })
+
+router.post("/resend",resendOTP)
 
 module.exports = router

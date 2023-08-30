@@ -44,6 +44,7 @@
     <form id="otpForm">
       <input type="text" name="otp" placeholder="OTP" required>
       <input type="submit" value="Submit">
+      <button id="resendButton">Resend OTP</button>
     </form>
 
     <script>
@@ -74,6 +75,26 @@
             alert('Internal Error')
           })
       })
+
+      const button = document.getElementById('resendButton')
+      button.addEventListener('click', (e)=>{
+        e.preventDefault()
+        fetch("/users/resend",{
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        }).then((response) => {
+            if (response.ok) {
+              alert('OTP resent')
+            } else {
+              alert('Some error in sending OTP')
+            }
+          })
+          .catch((error) => {
+            alert('Internal Error')
+          })
+        })
       
     </script>
   </body>

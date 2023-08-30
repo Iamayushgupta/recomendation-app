@@ -33,12 +33,12 @@ exports.signUpUser = async (req, res) => {
     const query = 'insert into users(email, password) values(?,?)'
     conn.query(query, [email, hashedPassword], (err, results) => {
         if (err) {
-            console.log(req.session)
             res.sendStatus(500)
         }
         else {
             const otp = generateOTP()
             req.session.OTP = otp
+            req.session.email = email
             sendEmail(email, otp)
             res.sendStatus(200)
         }
@@ -97,4 +97,11 @@ exports.editUser = async(req,res) =>{
     catch (e) {
         res.sendStatus(500)
     }
+}
+
+exports.resendOTP = async (req,res)=>{
+    const otp = generateOTP()
+    req.session.OTP = otp
+    sendEmail(req.session.email, otp)
+    res.sendStatus(200)
 }
